@@ -1,0 +1,68 @@
+```{r}
+student <- read.csv("Q1.csv",header =T)
+head(student)
+```
+a. Extract each dept students names separately
+```{r}
+aggregate(Name~Dept.Name, data = student,toString)
+```
+b. Extract S grade scores in all subjects in each dept seperately.
+```{r}
+s <- student[student$Grade1=='S'| student$Grade2=="S"|student$Grade3 =="S" |student$Grade4=="S"| student$Grade5=="S",c("Name","Dept.Name")]
+aggregate(Name~Dept.Name,s,toString)
+```
+c. Extract students who have scored at least S grades in any 2 subjects
+```{r}
+
+student[rowSums(student=="S")>1,c("Name","Dept.Name")]
+```
+d. Extract students who have scored above 9 SGPA in each dept
+```{r}
+st <- student[student$SGPA >= 9, c("Name","Dept.Name")]
+aggregate(Name~Dept.Name,st,toString)
+```
+e.store numerical data and transform to grades and store in new data frame
+```{r}
+library(plyr)
+
+
+calculateGrade <- function(mark) 
+{
+  m<-c()
+  for(x in mark)
+  {
+  if(x >= 80) {
+    res <- "A"
+  } else if(x >= 60 & x<80) {
+    res <- "B"
+  } else if(x >= 40 & x<60) {
+    res <- "C"
+  } else {
+    res <- "D"
+  }
+  m<-c(m,res)
+  #print(m)
+  }
+  m
+}
+
+ s1<-student[,"Sub1"]
+ s2<-student[,"Sub2"]
+ s3<-student[,"Sub3"]
+ s4<-student[,"Sub4"]
+ s5<-student[["Sub5"]]
+ g1=calculateGrade(s1)
+ g2=calculateGrade(s2)
+ g3=calculateGrade(s3)
+ g4=calculateGrade(s4)
+ g5=calculateGrade(s5)
+
+ ans<-data.frame(student$Name,student$USN,student$Dept.Name,g1,g2,g3,g4,g5)
+ans
+```
+f.check wether student grades are identical or not in each subject
+```{r}
+identical(student$Grade1,student$Grade2,student$Grade3,student$Grade4,student$Grade5)
+```
+
+.
